@@ -1,4 +1,4 @@
-import { component$, useStore, $ } from "@builder.io/qwik";
+import { component$, useStore, $, useVisibleTask$} from "@builder.io/qwik";
 import { type DocumentHead} from "@builder.io/qwik-city";
 import styles from "./quiz.module.css";
 import { quiz } from "~/data";
@@ -13,7 +13,9 @@ interface QuizStore {
     score: number;
     correctAnswers: number;
     wrongAnswers: number;
-  }
+  },
+  timer: number;
+  intervalId: any;
 }
 
 export default component$(() => {
@@ -23,7 +25,9 @@ const store = useStore<QuizStore>({
     score: 0,
     correctAnswers: 0,
     wrongAnswers: 0
-  }
+  },
+  timer: 10,
+  intervalId: null
 })
 
 const {questions} = quiz
@@ -41,8 +45,21 @@ const onAnswerSelected = $((anwser: any, idx: any) => {
   }
 });
 
+const startTimer = $(() => {
+  if (!store.intervalId) {
+    console.log("timer started")
+    const intervalId = setInterval(() => {
+      if (store.timer > 0 && !store.showResult) {
+        store.timer -= 1;
+      } else if (store.timer === 0) {
+        nextQuestion();
+      }
+    }, 1000)
+    store.intervalId = intervalId;
+  }
+})
 
-const nextQuestion = $(() => {
+ const nextQuestion = $(() => {
   if (store.selectedAnswer) {
     store.result.score += 5;
     store.result.correctAnswers += 1;
@@ -58,7 +75,15 @@ const nextQuestion = $(() => {
   }
     store.selectedAnswer = null;
     store.checked = false;
+    store.timer = 10;
+
+    startTimer();
 });
+
+
+useVisibleTask$((  ) => {
+  startTimer();
+}) 
 
   return (
     <>
@@ -69,6 +94,7 @@ const nextQuestion = $(() => {
           Question: {store.activeQuestion + 1}
           <span > /{questions.length}</span>
         </h2>
+        <h2>Time Left: {store.timer} seconds</h2>
       </div>
       <div>
         {!store.showResult ? (

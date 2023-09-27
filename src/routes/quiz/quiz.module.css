@@ -1,18 +1,21 @@
+/* Apply CSS reset, this ensures consistent layout behaviour. */
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
-
+/* Set body styles */
 html, body {
   overflow-x: hidden;
   background-color: #000925;
 }
 
+/* Style the main content */
 main {
   padding: 1rem;
 }
 
+/* Style the heading elements */
 h1, h2 {
   color: #eee;
 }
@@ -26,6 +29,7 @@ h3 {
 
 }
 
+/* Style Buttons */
 button {
   padding: 16px 8px;
   width: 100%;
@@ -41,6 +45,7 @@ button {
   background-color: lightgray;
 }
 
+/* Define the list item styles */
 li {
   list-style-type: none;
   cursor: pointer;
@@ -50,16 +55,20 @@ li {
   border: 1px solid lightgray;
 }
 
+/* Define hover styles for list items */
 .li-hover:hover {
   background-color: #d8d8d8;
   columns: #fff;
 }
 
+/* Define Selected List Item Styles */
 .li-selected {
   color: #fff;
   background-color: #000925;
 }
 
+
+/* Define Container Styles */
 .container {
   max-width: 740px;
   width: 100%;
@@ -71,6 +80,7 @@ li {
   padding: 8px 0;
 }
 
+/* Define Quiz Container Styles */
 .quiz-container {
   background-color: #f8f8f8;
   padding: 1rem;
@@ -78,7 +88,7 @@ li {
   border-radius: 4px;
 }
 
-
+/* Define Additional Styles for Lists, Inputs, and Hints */
 .list {
     display: flex;
     flex-direction: column;
@@ -116,6 +126,7 @@ li {
     margin-top: 30px;
   }
   
+  /* Define Styles inside the Media Query */
   @media screen and (min-width: 768px) {
     .input {
       padding: 23px 35px;
