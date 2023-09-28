@@ -18,7 +18,9 @@ interface QuizStore {
   timer: number;
   intervalId: any;
   user: any;
+  nextQuestion: boolean;
 }
+
 
 export default component$(() => {
 const store = useStore<QuizStore>({
@@ -30,12 +32,12 @@ const store = useStore<QuizStore>({
   },
   timer: 10,
   intervalId: null,
-  user: null
+  user: null,
+  nextQuestion: false,
 })
 const username = useSignal('');
 const password = useSignal('');
 const userAuthenticated = useSignal(false);
-
 
 const {questions} = quiz
 const {question, answers, correctAnswer} = questions[store.activeQuestion];
@@ -52,19 +54,7 @@ const onAnswerSelected = $((anwser: any, idx: any) => {
   }
 });
 
-const startTimer = $(() => {
-  if (!store.intervalId) {
-    console.log("timer started")
-    const intervalId = setInterval(() => {
-      if (store.timer > 0 && !store.showResult) {
-        store.timer -= 1;
-      } else if (store.timer === 0) {
-        nextQuestion();
-      }
-    }, 1000)
-    store.intervalId = intervalId;
-  }
-})
+
 
 const login = $(async () => {
   try {
@@ -83,7 +73,6 @@ const login = $(async () => {
   }
 });
 
-
  const nextQuestion = $(() => {
   if (store.selectedAnswer) {
     store.result.score += 5;
@@ -101,10 +90,27 @@ const login = $(async () => {
     store.selectedAnswer = null;
     store.checked = false;
     store.timer = 10;
-
-    startTimer();
+    store.nextQuestion = true;
 });
 
+
+const startTimer = $(() => {
+  if (!store.intervalId) {
+    console.log("timer started")
+    const intervalId = setInterval(() => {
+      if (store.timer > 0 && !store.showResult) {
+        store.timer -= 1;
+      } else if (store.timer === 0) {
+        nextQuestion();
+      }
+    }, 1000)
+    store.intervalId = intervalId;
+  }
+})
+
+if (store.nextQuestion === true) {
+  startTimer()
+}
 
 // Start the timer using useVisibleTask$ only if the user is authenticated
 if (userAuthenticated.value === true) {
